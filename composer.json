@@ -1,6 +1,18 @@
 {
     "name": "northwoods/router",
-    "description": "A middleware, strategy based router",
+    "description": "Fast router for PSR-15 request handlers",
+    "keywords": [
+        "http",
+        "fast",
+        "router",
+        "request",
+        "handler",
+        "middleware",
+        "psr-15",
+        "psr15",
+        "psr-7",
+        "psr7"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -13,6 +25,24 @@
         "sort-packages": true
     },
     "minimum-stability": "stable",
+    "require": {
+        "php": "^7.1",
+        "fig/http-message-util": "^1.1",
+        "http-interop/http-factory-discovery": "^1.2",
+        "nikic/fast-route": "^1.3",
+        "psr/http-server-middleware": "^1.0"
+    },
+    "require-dev": {
+        "nyholm/psr7": "^1.0",
+        "phpstan/phpstan": "^0.10.5",
+        "phpstan/phpstan-phpunit": "^0.10.0",
+        "phpunit/phpunit": "^7.3",
+        "squizlabs/php_codesniffer": "^3.3"
+    },
+    "suggest": {
+        "northwoods/broker": "Simple middleware dispatcher",
+        "northwoods/lazy-middleware": "Lazy load handlers from a container"
+    },
     "autoload": {
         "psr-4": {
             "Northwoods\\Router\\": "src/"
@@ -23,22 +53,10 @@
             "Northwoods\\Router\\": "tests"
         }
     },
-    "require": {
-        "php": "^7.1",
-        "http-interop/http-factory-discovery": "^1.2",
-        "nikic/fast-route": "^1.3",
-        "psr/http-server-middleware": "^1.0"
-    },
-    "require-dev": {
-        "nyholm/psr7": "^1.0",
-        "phpstan/phpstan": "^0.10.3",
-        "phpstan/phpstan-phpunit": "^0.10.0",
-        "phpunit/phpunit": "^7.3",
-        "squizlabs/php_codesniffer": "^3.3"
-    },
     "scripts": {
         "analyze": "phpstan analyse -l max -c phpstan.neon src tests --no-progress",
         "check": "phpcs -n",
-        "test": "phpunit --testdox"
+        "test": "phpunit --testdox",
+        "ci": ["@analyze", "@check", "@test"]
     }
 }

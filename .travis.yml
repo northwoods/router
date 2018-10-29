@@ -1,31 +1,20 @@
 language: php
 
 php:
-  - 7.0
   - 7.1
-  - nightly
+  - 7.2
+  - 7.3
 
-env: MINIMUM_VERSIONS=false
+cache:
+  directories:
+    - $HOME/.composer/cache
 
-matrix:
-  fast_finish: true
-  include:
-    - php: 7.0
-      env: MINIMUM_VERSIONS=true
-  allow_failures:
-    - php: nightly
-
-install:
-  - if [[ $MINIMUM_VERSIONS = false ]]; then composer install; fi
-  - if [[ $MINIMUM_VERSIONS = true ]]; then composer update --no-interaction --prefer-lowest; fi
+before_script:
+  - composer install
 
 script:
-  - composer test
-  - composer check
+  - composer ci
 
 after_script:
-  - |
-    if [ -f "build/logs/clover.xml" ]; then
-      wget https://scrutinizer-ci.com/ocular.phar
-      php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
-    fi
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover build/logs/clover.xml
