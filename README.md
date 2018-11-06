@@ -22,8 +22,8 @@ composer require northwoods/router
 
 ## Usage
 
-The router implements both `MiddlewareInterface` and `RequestHandlerInterface`
-and can be used with any middleware dispatcher, such as [Broker][broker]:
+The router implements `MiddlewareInterface` and can be used with any middleware
+dispatcher, such as [Broker][broker].
 
 ```php
 use Northwoods\Router\Router;
