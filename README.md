@@ -22,6 +22,9 @@ composer require northwoods/router
 
 ## Usage
 
+The router implements both `MiddlewareInterface` and `RequestHandlerInterface`
+and can be used with any middleware dispatcher, such as [Broker][broker]:
+
 ```php
 use Northwoods\Router\Router;
 use Psr\Http\Message\ResponseInterface;
@@ -32,32 +35,23 @@ $router->get('user.list', '/users', $userList);
 $router->get('user.detail', '/users/{id:\d+}', $userDetail);
 $router->post('user.create', '/users', $userCreate);
 
+assert($router instanceof Psr\Http\Server\MiddlewareInterface);
+```
+
+This is the preferred usage of the router, as it ensures that the request is
+properly set up for the route handler. Generally the router should be the last
+middleware in the stack.
+
+If you prefer to use the router without middleware, the router also implements
+`RequestHandlerInterface` and can be used directly:
+
+```php
 /** @var ServerRequestInterface */
 $request = /* create server request */;
 
 /** @var ResponseInterface */
 $response = $router->handle($request);
 ```
-
-### Usage with Middleware
-
-The router implements `RequestHandlerInterface` and can be used with any
-`MiddlewareInterface` implementation, including middleware dispatchers that
-implement the middleware interface, such as [Broker][broker]:
-
-```php
-/** @var \Northwoods\Broker\Broker */
-$broker = /* create the broker */;
-
-/** @var \Northwoods\Router\Router */
-$router = /* create the router */;
-
-// Use the router as the request handler
-$response = $broker->process($request, $router);
-```
-
-This is the preferred usage of the router, as it ensures that middleware wraps
-the execution of application code.
 
 [broker]: https://github.com/northwoods/broker
 
@@ -141,6 +135,12 @@ Add a route that works for HTTP HEAD requests.
 ### Router::options($name, $pattern, $handler)
 
 Add a route that works for HTTP OPTIONS requests.
+
+### Router::process($request, $handler)
+
+Dispatch routing as a middleware.
+
+If no route is found, the `$handler` will be used to generate the response.
 
 ### Router::handle($request)
 

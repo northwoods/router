@@ -12,11 +12,13 @@ use Http\Factory\Discovery\HttpFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 use function FastRoute\simpleDispatcher;
 
 class Router implements
+    MiddlewareInterface,
     RequestHandlerInterface,
     RequestMethodInterface,
     StatusCodeInterface
@@ -156,16 +158,15 @@ class Router implements
         throw Error\UriParametersMissingException::from($name, $missing, array_keys($params));
     }
 
-    // RequestHandlerInterface
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    // MiddlewareInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // https://github.com/nikic/FastRoute#usage
         $dispatcher = $this->makeDispatcher();
         $match = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
         if ($match[0] === Dispatcher::NOT_FOUND) {
-            return $this->responseFactory
-                        ->createResponse(self::STATUS_NOT_FOUND);
+            return $handler->handle($request);
         }
 
         if ($match[0] === Dispatcher::METHOD_NOT_ALLOWED) {
@@ -179,6 +180,12 @@ class Router implements
         }
 
         return $match[1]->handler()->handle($request);
+    }
+
+    // RequestHandlerInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->process($request, new NotFoundHandler($this->responseFactory));
     }
 
     /** @return string[] */
