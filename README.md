@@ -1,6 +1,6 @@
 # Northwoods Router
 
-[![Build Status](https://travis-ci.com/northwoods/router.svg?branch=develop)](https://travis-ci.com/northwoods/router)
+[![Build Status](https://travis-ci.com/northwoods/router.svg?branch=master)](https://travis-ci.com/northwoods/router)
 [![Code Quality](https://scrutinizer-ci.com/g/northwoods/router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/northwoods/router/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/northwoods/router/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/northwoods/router/?branch=master)
 [![Latest Stable Version](http://img.shields.io/packagist/v/northwoods/router.svg?style=flat)](https://packagist.org/packages/northwoods/router)
